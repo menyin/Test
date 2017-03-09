@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/basic.css"/>
+    <script>
+        var ln_languageselect = "选择语言";
+        var ln_iscroll_last_page = "已经是最后一页了";
+        var ln_wrong_user_password = "对不起，您输入的账号或密码不正确！";
+        var ln_no_sing_in = "没有登录，请先登录！";
+        var Sessionid = "1A8757C764C05758DFF44EA9DBEFBFFC";
+        var locale = "zh_CN";//en_US,zh_CN
+        var filterConditions = '';
+        var base_head_keyword = "";//关键字
+        var sellerbase = "/seller";
+
+    </script>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script src="js/移动端js_comm_temp注释.js"></script>
+    <script src="js/移动端jspublic注释.js"></script>
+    <script>
+        window.onload = function () {
+            SGUI.alert(ln_no_sing_in, function () {
+                alert('SGUI.alert执行完毕');
+            });
+        }
+
+        //登录判断
+        islogin(function () {
+            SG.send({
+                website: 'sns',//sns,front,seller//api 接口
+                url: "/sgmtw/Home/Home", //
+                success: function (data) {//成功后返回数据：data
+                    var ob = data.data;
+                    //console.log(data)
+                    if (data.flag) {
+                        $(".visitorCount").text(ob.visitorCount);
+                        $(".followers").text(ob.user.followers);
+                        $(".followings").text(ob.user.followings);
+                        $(".dtai_count").text(ob.user.updates);
+                        var bg_default = '/mtw/resources/images/pic_personal.jpg';
+                        ob.user.personalized_img_path = ob.user.personalized_img_path || bg_default;
+                        $(".sindex_sect1 .main").attr("style", "background:url(" + web_root_img + ob.user.personalized_img_path + ") no-repeat");
+                        $(".s_img").attr("src", web_root_img + ob.user.avatar);
+                        $(".s_name").text(ob.user.nick);
+                        user_name = ob.user.nick;
+                        friendId = ob.user.user_id;
+                        useq = ob.user.uuid;
+                    } else {
+                        SGUI.alert(data.msg);
+                    }
+                }
+            });
+        });
+        SG.tagSend({
+            website: 'front',//sns,front,seller//api 接口
+            tagName: 'articleClassTitleTag',
+            tagJsonParam: "{'articleType':'${article_Type}'}",
+            success: function (data) {//成功后返回数据：data
+                console.log(data);
+                data.locale = locale;
+                var help_list = template("help_list", {data: data});
+                $(".help_index").html(help_list);
+            }
+        });
+
+
+    </script>
+
+</head>
+<body>
+
+<script>
+    alert(JSON.stringify(undefined));
+
+</script>
+<h2 id="testVal">ddddd</h2>
+<script>
+    $('#testVal').html(444444444);
+</script>
+
+
+<li class="f_pinlun">
+    <img src="${base}/res_h5/ad_image/f_pic.png" class="f_pinlun_pic">
+
+    <div class="r f_pinlun_main bd_3 p10_2">
+        <div class="t">Jan（China）<i class="iconfont icon-xingxing"></i><i class="iconfont icon-xingxing"></i><i
+                class="iconfont icon-xingxing"></i><i class="iconfont icon-xingxing"></i><i
+                class="iconfont icon-star"></i></div>
+        <p class="hui_c9 p10_1 p5_3">09 Oct 201 Ships from: China Size: 10 inch Color: Red</p>
+
+        <p class="hui_c3 descr">I would recommend. good projector for this cost.
+            wonderful seller. goods come in Voronezh for 4 days
+            (and what was the weekend). everything is fine.</p>
+
+        <p class="bg_f8 p10 view_origin"><em class="hui_c3">Seller reply:</em> the best SD card is one that has the
+            fastest MB
+            transfer speed like 80MB per second, regardless of space
+            capacity.
+        </p>
+
+        <div class="btm clr   p20_1 p20_3 font_t">
+            <span class="left">Was this Q&A helpful?</span>
+
+            <div class="right">
+                <span class="f_dzan p5_2"><i class="iconfont icon-dianzan blue"></i>(123)</span>
+                <span class="f_nodzan"><i class="iconfont icon-dianzan"></i>(12)</span>
+            </div>
+        </div>
+    </div>
+</li>
+
+
+<div class="nodata tac  bg_a" style="display: none;">
+    <div class="top">
+        <p><img src="${base}/res_h5/image/nodata.png" width="176px" height="138px"/></p>
+        <h2 class="m20 p10">No under bidding orders to display.</h2>
+    </div>
+</div>
+
+
+</body>
+</html>

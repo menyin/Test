@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+<body class="">
+<link rel="stylesheet" type="text/css" href="css/front.css">
+<link rel="stylesheet" type="text/css" href="css/basic.css">
+<input type="button" class="btn_blue" value="Add"/><br/>
+<input type="button" class="btn_whiteBlue" value="Add"/><br/>
+<input type="button" class="btn_blue1" value="Add"/><br/>
+<input type="button" class="btn_whiteBlue1" value="Add"/><br/>
+<!-- 头部 -->
+<div class="m_header tal" id="m_header">   <!--文字居中，直接删除tal样式-->
+    <input placeholder="Search..." name="" class="inputTxt" type="text">
+    <i class="iconfont icon-jiantou js_goback"></i>
+    <div class="m_header_r">
+        <i class="iconfont icon-search"></i>
+        <i class="iconfont icon-santiao j_store"></i>
+        <i class="iconfont icon-sandian j_icon-sandian"></i>
+        <ul class="f_iMall_choose j_i_store tal" style="display: none">
+            <li>Smartphones (145)</li>
+            <li>Apple iPhone (12)</li>
+            <li>HTC Series(12)</li>
+            <li>Samsung Series(12)</li>
+        </ul>
+
+    </div>
+</div>
+<!-- 主体 -->
+<div class="m_body m_toHeader f_store_manu">
+    <div class="grag_bg">
+        <div class="f_pDetail_sect4 bg_a  clr">
+            <div class="f_c ">
+                <div class="clr f_row1 p10_a p20_1 p10_3">
+                    <img src="/sgshop-seller/res_h5/ad_image/f_s_img.png" class="s_img left">
+                    <div class="s_info left">
+                        <div class="name font_t blue p5_3">Jayjay's Store</div>
+                        <p class="blue">
+                            <i class="iconfont icon-iconfontrocket"></i><i class="iconfont icon-iconfontrocket"></i><i class="iconfont icon-iconfontrocket"></i><i class="iconfont icon-iconfontrocket"></i>
+                        </p>
+                    </div>
+                    <i class="iconfont icon-fenxiang right"></i>
+                </div>
+                <div class="tac m10 m20_3">
+                    <a href="javascript:;" class="btn_blue1 m10_2"><i class="iconfont icon-xiaoxi m5_2 vam"></i>Message</a>
+                    <a href="javascript:;" class="btn_whiteBlue1"><i class="iconfont icon-jiahao m5_2 vam"></i>Follower</a>
+                </div>
+                <ul class="font_t m_showfx f_row2 bd ">
+                    <li class="tac fx1 bd_2 p5">
+                        <a href="/sgshop-seller/toPage?url=/h5/front/store_product_manufecure">
+                            <p class="p5_3 hui_c3">99</p>
+                            <p class="hui_c9">Item</p>
+                        </a>
+                    </li>
+                    <li class="tac fx1 bd_2 p5">
+                        <p class="hui_c3 p5_3">147</p><p class="hui_c9">Feedbacks</p>
+                    </li>
+                    <li class="tac fx1 p5">
+                        <p class="hui_c3 p5_3">147</p><p class="hui_c9">Followers</p>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="grag_bg p10_1">
+        <div class="f_pDetail_sect3 bg_lightBlue p20 bd_3 clr f_coupons">
+            <ul class="font_t left">
+                <li class="f_pD_couns">
+                    <img src="/sgshop-seller/res_h5/image/f_p_cou1.png">
+                    Store Coupons
+                </li>
+                <li class="f_pD_couns">
+                    <img src="/sgshop-seller/res_h5/image/f_p_cou2.png">
+                    <span>$ 66 off per $ 1000 </span>
+                </li>
+            </ul>
+            <div class="right" onclick="coupons()">
+                <i class="iconfont icon-you"></i>
+            </div>
+        </div>
+    </div>
+
+
+    <!--coupons-->
+    <div class="f_p_coupons hide p10">
+        <div class="t  bd_3 clr">
+            <h4 class="left">Discounts &amp; Coupons</h4>
+            <i class="iconfont icon-cha right" onclick="hideSetting()"></i>
+        </div>
+        <dl class="c">
+            <dt class="tit">Seller Discoun</dt>
+            <dd class="f_c_coupons f_blue_coupons"><a href="javascript:;" class="font_h">
+                $ 66 off per $ 1000
+            </a></dd>
+            <dt class="tit">Store Coupons</dt>
+            <dd class="f_c_coupons f_orange_coupons"><a href="javascript:;" class="m_showfx">
+                <div class="left fx4">
+                    <em class="price">US $ 5.50</em>
+                    <p>Spend $ 100.00, Get $3.24 off</p>
+                    <p>Expires 16/12/22</p>
+                </div>
+                <div class="right fx1">
+                    GET IT NOW
+                </div>
+            </a></dd>
+            <dd class="f_c_coupons f_orange_coupons"><a href="javascript:;" class="m_showfx">
+                <div class="left fx4">
+                    <em class="price">US $ 5.50</em>
+                    <p>Spend $ 100.00, Get $3.24 off</p>
+                    <p>Expires 16/12/22</p>
+                </div>
+                <div class="right fx1">
+                    GET IT NOW
+                </div>
+            </a></dd>
+        </dl>
+    </div>
+    <div class="grag_bg p10_1">
+        <div class="bg_a p20_b f_paySuccess p10_a">
+            <div class="hui_c3 line30">Sale Items (99)</div>
+            <ul class="f_pList_list tac">
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img1.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img2.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img1.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img2.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <a href="/sgshop-seller/toPage?url=/h5/front/store_product_manufecure" class="block blue tac line36">View All</a>
+        </div>
+    </div>
+    <div class="grag_bg p10_1">
+        <div class="bg_a p20_b f_paySuccess p10_a">
+            <div class="hui_c3 line30">Hot Sale (99)</div>
+            <ul class="f_pList_list tac">
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img1.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img2.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img1.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sgshop-seller/toPage?url=/h5/front/product_details">
+                        <img src="/sgshop-seller/res_h5/ad_image/f_p_img2.png" class="pic">
+                        <div class="f_p_r p5_1">
+                            <p class="font_t blue">$ 699.00</p>
+                            <p class="linethrough font_c hui_c9">$ 499.00</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <a href="/sgshop-seller/toPage?url=/h5/front/store_product_manufecure" class="block blue tac line36">View All</a>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="/sgshop-seller/res_h5/public/js/swipe.js"></script>
+
+<script type="text/javascript">
+    //coupons
+    function coupons(){
+        $(".f_p_coupons").sliderShow({
+            direction:'top' ,
+            height:"90%"
+        })
+    }
+    function hideSetting(){
+        $(".j_sliderMask").click();
+    }
+    $(".j_store").click(function(){
+        $(".j_i_store").toggle()
+    })
+    $(".j_i_store").bind("click",function(){
+        $(this).hide();
+    })
+</script>
+
+
+</body>
+</html>
