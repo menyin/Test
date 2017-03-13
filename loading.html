@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script>
+        window.onload = function () {
+            var sLoadingImg = '<div class="loadingImg" style="width:200px; height:20px;">' +
+                    '<p class="item1" style="display:none;margin:0 10px;width:20px;height:20px;background:blue;float:left"></p>' +
+                    '<p class="item2" style="display:none;margin:0 10px;width:20px;height:20px;background:blue;float:left"></p>' +
+                    '<p class="item3" style="display:none;margin:0 10px;width:20px;height:20px;background:blue;float:left"></p>' +
+                    '<p class="item4" style="display:none;margin:0 10px;width:20px;height:20px;background:blue;float:left"></p>' +
+                    '<p class="item5" style="display:none;margin:0 10px;width:20px;height:20px;background:blue;float:left"></p>' +
+                    '</div>';
+
+
+
+            var iNow = 0;
+            var timer = setInterval(function () {
+                if (iNow == 5) {
+                    iNow = 0
+                    $('.loadingImg').find('p').hide();
+                } else {
+                    iNow++;
+                    document.title = iNow;
+                    $('.loadingImg').find('.item' + iNow).show();
+                }
+            }, 300);
+
+            $('#bt').click(function () {
+                iNow = 0;
+                clearInterval(timer);
+            });
+        }
+
+    </script>
+    <style>
+
+    </style>
+</head>
+<body>
+
+</body>
+</html>
