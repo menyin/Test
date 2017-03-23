@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script>
+        /**
+         * 具体商品SKU处理工厂(不是SKU对象)
+         * @param data 输入接口数据，接口为"/product/goodsinfo?goodsId=123&locale=en"
+         * @constructor
+         * @returns 商品SKU处理工厂
+         * @description
+         * 实例对象包含以下属性
+         *    goods 商品对象 goods
+         *    infoList 商品规格列表(包含中英文信息)
+         *   defaultInfoSKU 商品默认SKU和规格对象，包含SKU的id
+         *    SKUList 商品包含SKU对象列表
+         */
+        function SKU_Factory(data) {
+            this.goods = data.goods;//商品对象
+            this.infoList = [];
+            this.SKUList = data.goodsSpecObj.goodsSpecs;//商品包含SKU对象列表
+            this.defaultInfoSKU = null;
+
+            /*生产默认SKU和对应规格列表*/
+            var defaultSkuId = this.goods.specId;//商品默认sku
+            this.defaultInfoSKU = defaultSkuId ? {} : null;
+            for (var i = 0; i < this.SKUList.length; i++) {
+                if (this.SKUList[i].goodsSpecId == defaultSkuId) {
+                    this.defaultInfoSKU.skuId = defaultSkuId;
+
+                    var infoListTemp = [];
+                    var infoTemp = JSON.parse(this.SKUList[i].specName);
+                    if (infoTemp) {
+                        for (var infoId in infoTemp) {
+                            var info = {};
+                            info.id = infoId;
+                            info.name = infoTemp[infoId];
+                            infoListTemp.push(info);
+                        }
+                    }
+                    var valList = [];
+                    var valTemp = JSON.parse(this.SKUList[i].specGoodsSpec);
+                    if (valTemp) {
+                        for (var valId in valTemp) {
+                            var val = {};
+                            val.id = valId;
+                            val.name = valTemp[valId];
+                            valList.push(val);
+                        }
+                    }
+
+                    this.defaultInfoSKU.list = [];
+                    for (var j = 0; j < infoListTemp.length; j++) {
+                        var infoObj = {};
+                        infoObj.infoId = infoListTemp[i].id;
+                        infoObj.infoName = infoListTemp[i].name;
+                        infoObj.valId = valList[i].id;
+                        infoObj.valName = valList[i].name;
+                        this.defaultInfoSKU.list.push(infoObj);
+                    }
+
+                    break;
+                }
+            }
+
+
+            /*生产规格列表*/
+            for (var infoId in data.goodsSpecObj.i18n) {
+                var info = {};
+                info.id = infoId;
+                info.cn_name = data.goodsSpecObj.i18n[infoId].cn_name;
+                info.en_name = data.goodsSpecObj.i18n[infoId].en_name;
+                //遍历中英文值列表
+                info.cn_value = [];
+                for (var infoValId in data.goodsSpecObj.i18n[infoId].en_value) {
+                    var infoVal = {};
+                    infoVal.id = infoValId;
+                    infoVal.name = data.goodsSpecObj.i18n[infoId].en_value[infoValId];
+                    info.cn_value.push(infoVal);
+                }
+                info.en_value = [];
+                for (var infoValId in data.goodsSpecObj.i18n[infoId].en_value) {
+                    var infoVal = {};
+                    infoVal.id = infoValId;
+                    infoVal.name = data.goodsSpecObj.i18n[infoId].en_value[infoValId];
+                    info.en_value.push(infoVal);
+                }
+                this.infoList.push(info);
+            }
+        }
+
+
+    </script>
+
+    <script>
+
+        function reloadEdit() {
+            personbgpath = $("#personbgImg").attr("src");
+            var stylePer = $("#personbgImg").attr("style");
+            if (personbgpath && stylePer) {
+                if (stylePer) {
+                    personbgImgY=$("#personbgImg").height();
+                    var t = stylePer.split("top:");
+                    if (t.length != 1) {
+                        t = t[1].split("px");
+                        lastImgTop = t[0];
+                    }
+                }
+                personbgfun(true, personbgImgX, personbgImgY, personbgpath);
+            }
+        }
+        /* var personbgImgX=1920; cny_add*/
+        var personbgImgX = 1260;
+        var personbgImgY = 320;
+        var personbgpath = "";
+        var personbgImgtop = 0, personbgImgleft = 0;
+        var personbgold_path, personbgold_sty;
+        var lastImgTop = 0;
+        personbgold_path = $("#personbgImg").attr("src");
+        if ($("#personbgImg").attr("style") == undefined) {
+            personbgold_sty = "";
+        }
+        else {
+            personbgold_sty = $("#personbgImg").attr("style");
+        }
+        $("#personbgImgsave .s_cancle").click(function () {
+            personbgfun(false, "", "", personbgpath, "width:" + personbgImgX + "px;height:auto;top:" + lastImgTop + "px;left:0");
+        });
+        $("#personbgImgsave .s_ok").click(function () {
+            $.ajax({
+                type: 'post',
+                url: calendar_path + "/sgmtw/UserCenter/SaveUserCover", //保存自定义位置
+                data: {w: personbgImgX, h: personbgImgY, l: personbgImgleft, t: personbgImgtop, path: personbgpath},
+                dataType: 'json',
+                success: function (data) {
+                    lastImgTop = personbgImgtop;
+                    personbgfun(false, "", "", personbgpath, "width:" + personbgImgX + "px;height:auto;top:" + personbgImgtop + "px;left:0;");
+
+                },
+                error: function (data, status) {
+                    alert('error:' + status);
+                }
+            });
+        });
+        /**
+         * 设置图片是进入可编辑状态，通过i参数
+         *@param {bool} i 是否处进入编辑状态
+         *@param w 图片在DOM里实际的宽度
+         *@param h 图片在DOM里实际的高度
+         *@param path 当i为false时，若有新图片，则该参数为新图的url
+         *@param sty 当i为false时，sty为取消后样式
+         **/
+        function personbgfun(i, w, h, path, sty) {
+            var oDiv = document.getElementById('personbgImg');
+            if (i) {
+                personbgImgX = w * 1;
+                personbgImgY = h * 1;
+                oDiv.setAttribute('class', 'hand');
+                oDiv.onmousedown = function (ev) {
+                    var oEvent = ev || event;
+                    var disX = oEvent.clientX - oDiv.offsetLeft;//鼠标在图片中的坐标
+                    var disY = oEvent.clientY - oDiv.offsetTop;
+                    if (oDiv.setCapture) {
+                        oDiv.onmousemove = fnMove;
+                        oDiv.onmouseup = fnUp;
+                        oDiv.setCapture();
+                    }
+                    else {
+                        document.onmousemove = fnMove;
+                        document.onmouseup = fnUp;
+                    }
+
+                    function fnMove(ev) {
+                        var oEvent = ev || event;
+                        var l, t;
+                        l =0;
+                        t = oEvent.clientY - disY;
+                        if (t > 0) {
+                            t = 0
+                        }
+                        else if (personbgImgY + t < 320) {
+                            t = 320- personbgImgY;
+                        }
+                        personbgImgtop = t;
+                        personbgImgleft = l;
+                        oDiv.style.left = l + 'px';
+                        oDiv.style.top = t + 'px';
+                    }
+
+                    function fnUp() {
+                        this.onmousemove = null;
+                        this.onmouseup = null;
+
+                        if (this.releaseCapture) {
+                            this.releaseCapture();
+                        }
+                    }
+
+                    return false;
+                };
+                $("#personbgImgsearch").hide();
+                $("#personbgImgsave").show();
+                $("#personbgImgtxt").show();
+            }
+            else {
+                oDiv.setAttribute('class', '');
+                if (path) {//若有新图片url和sty则用新的
+                    $("#personbgImg").attr({"src": path, "style": sty});
+                }
+                else {//若有新图片url和sty则用原来页面加载后原始图片元素上图片和sytle
+                    $("#personbgImg").attr({"src": personbgold_path, "style": personbgold_sty});
+                }
+                $("#personbgImgsearch").show();
+                $("#personbgImgsave").hide();
+                $("#personbgImgtxt").hide();
+                oDiv.onmousedown = function (ev) {
+                };
+            }
+        }
+
+        var f_cover = 0;
+        $('#fileupload_coverbg').fileupload({
+            url: '${ctx}/sgmtw/UploadImg/Img?zoomScale=200&saveDir=album/photo&oriImg=1',
+            dataType: 'json',
+            pasteZone: $('#fileupload_coverbg'),
+            formData: {},
+            done: function (e, data) {
+                if (data.result.flag != undefined) {
+                    if (data.result.flag == "false") {
+                        mtwAlert(data.result.msg);
+                        $('#ts_cover_personbg').hide();
+                        f_cover = 0;
+                        return false;
+                    }
+                }
+                $.each(data.result, function (index, data) {
+                    //alert("原图地址："+data.ori+"，缩略图地址："+data.thumnbnail);
+                    var imgwidth = data.width;//上传图片宽度
+                    var imgheight = data.height;//上传图片高度
+                    if (imgwidth < 1260 || imgheight < 320) {
+                        mtwAlert(personbgimg_wring);
+                        return;
+                    }
+                    loadshow.show('', '', '');
+                    personbgpath = data.ori;
+                    /* cny_add */
+                    $("#personbgImg").parent().append('<img id="personbgImgload" src="' + data.ori + '" style="display:none;width:1260px;height:auto;top:0px;left:0px">')
+                    var isLoad;
+
+                    function isImgLoad() {
+
+                        var Img = new Image();
+                        Img.src = data.ori;
+                        Img.onload = function () {
+                            /*新上传图片放在#personbgImgload，加载完后替换掉#personbgImg元素*/
+                            var loadsty = $("#personbgImgload").attr("style");
+                            $("#personbgImg").remove();
+                            $("#personbgImgload").attr("id", "personbgImg").css("display", "block");
+                            /*cny_note personbgfun(true,imgwidth,imgheight); */
+                            personbgImgX=1260;
+                            personbgImgY=$("#personbgImg").height();
+                            personbgfun(true, personbgImgX,personbgImgY);//cny_add
+                            loadshow.hide('', '', '');
+                        }
+                    }
+
+                    isImgLoad();
+                });
+                $('#ts_cover_personbg').hide();
+                f_cover = 0;
+                /*  //cny_add
+                 setpersonbgImgResposive(); */
+            },
+            change: function (e, data) {
+
+            },
+            fail: function (e, data) {
+                $('#ts_cover_personbg').hide();
+                f_cover = 0;
+            },
+            progressall: function (e, data) {
+                if (f_cover == 0) {
+                    $("#ts_cover_personbg").css({
+                        width: $("#photo").outerWidth() + "px",
+                        display: "block"
+                    });
+                    var oDiv = document.getElementById("processcontainer_cover");
+                    oDiv.style.top = "90px";
+                    oDiv.style.left = "735px";
+                    f_cover = 1;
+                }
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                setProcessCover(progress);
+            },
+            dropZone: $('#dropzone')
+        });
+        function setProcessCover(w) {
+            var processbar = document.getElementById("processbar_cover");
+            processbar.style.width = w + "%";
+            processbar.innerHTML = processbar.style.width;
+            if (processbar.style.width == "100%") {
+            }
+        }
+
+    </script>
+
+
+    <script>
+
+
+    </script>
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div id="dv" style="color:red;left:0px;"></div>
+</body>
+<script>
+
+</script>
+</html>
+
+<script type="text/javascript">
+</script>
