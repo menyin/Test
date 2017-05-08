@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<dd class="hot_area" id = "areaContent">
+    <div class="" name="imageMap" id="image_map">
+        <img src="images/timg.jpg"  ref="imageMap" id="photo"/>
+    </div>
+    <div class="install_fixedNav fl">
+        <dl class="nav_address clearfix">
+            <dt>图片地址：</dt>
+            <dd>
+                <input id="picUrl" type="text" class="w113 ipt_border" readonly="readonly" value="images/timg.jpg" name="pic">
+                <a id="uploadPic" class="second_btn" href="javascript:void(0)">上传</a>
+            </dd>
+            <dd class="gray01">（悬浮导航最大尺寸为125*380px）</dd>
+        </dl>
+        <div class= "img_hot_pot mt">
+            <div class="img_map mt" id="fixedNav">
+                <p class="hot_pot_num">已添加<em class="colorf60 added_amount">0</em>个热区，还可以添加<em class="colorf60 remain_amount">9</em>个热区</p>
+                <input type="hidden" class="area_info" id="hotAreas" name="hotAreas" value='111111111111111111111111'>
+                <table width="101%" cellspacing="0" cellpadding="0" border="0" class="nav_table zx_table">
+                    <thead>
+                    <tr>
+                        <th width="70">热区</th>
+                        <th width="156">标题</th>
+                        <th width="235">导航链接/跳转模块</th>
+                        <th width="76">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="areaItems">
+                    </tbody>
+                </table>
+                <p class = "add_hot_pot">
+                    <a id="add_hot_area" href="javascript:;" class="second_btn">添加热区</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</dd>
+
+</body>
+</html>
+
+<script src="js/jquery-1.8.3.min.js"></script>
+
+<script>
+    function initHotArea() {
+        var obj = $('#image_map').find('img');
+        var picUrl = $("#picUrl").val();
+        obj.attr('src', picUrl);
+        obj.load(function(){
+            //加载图片热区入口
+            $('#image_map').imageMaps(setHotAreaSetting());
+        });
+    }
+</script>
+<script>
+    initHotArea();
+</script>
+<script>
+    //设置热区插件参数setting
+    function setHotAreaSetting(){
+        var setting = {};
+        setting.maxAmount = 9;//最多可添加几个热区
+        setting.rowDomTag = 'tr'; //domTag
+        setting.specialHotItemParams = {'areaType':'','areaLink':''};//特殊热区dom中的参数对象以及默认值
+        setting.specialHotItemDomFunction = function(obj){
+            if(obj.areaType != null && obj.areaType != '' &&obj.areaType == '2'){
+                return '<td><div class="install_fixedNav_con" id="ifn"><span class="hot_pot_style" id = "hp"><a class="" name="lianjie" href="javascript:;">链接</a><a class="on" name= "mokuai" href="javascript:;">模块</a></span>'+
+                        '<input type="text" class="fixedNav_block ipt_border hot_link_lianjie none" value ="'+ obj.areaLink + '"/><select id="list'+obj.index +'" class="fixedNav_block hot_link_mokuai"><option>模块</option></select></div></td>';
+            }
+            else{
+                return '<td><div class="install_fixedNav_con" id="ifn"><span class="hot_pot_style" id = "hp"><a class="on" name="lianjie" href="javascript:;">链接</a><a class="" name= "mokuai" href="javascript:;">模块</a></span>'+
+                        '<input type="text" class="fixedNav_block ipt_border hot_link_lianjie" value ="'+ obj.areaLink + '"/><select id="list'+obj.index +'" class="fixedNav_block hot_link_mokuai none"><option>模块</option></select></div></td>';
+            }
+        }
+        setting.initSpecialDomFunction = function(specialHotItemParams){
+            //导航链接模块切换
+            $('a','.hot_pot_style').live('click',function(){
+                var index = $(this).index();
+                tabCon = $(this).parent().siblings('.fixedNav_block');
+                $(this).addClass('on').siblings('a').removeClass('on');
+                tabCon.eq(index).removeClass('none').siblings('.fixedNav_block').addClass('none');
+            });
+
+            $('#list'+specialHotItemParams.index).empty();
+            $('.module[data-identityid !=""]','.layout_column').each(function(){
+                        _this = $(this);
+                        //截取module_
+                        var moduleIdentityId = _this.attr('data-identityid');
+                        var moduleName = _this.attr('name');
+                        var modulePrototypeId = _this.attr('data-prototypeid');
+                        //22-悬浮导航 100-全局背景 系统模块固定ID
+                        if(modulePrototypeId && modulePrototypeId != 22 && modulePrototypeId != 100){
+                            $('#list'+specialHotItemParams.index).append("<option value='"+moduleIdentityId+"'>"+moduleName+"</option>");
+                        }
+                    }
+            );
+            if(specialHotItemParams){
+                if(specialHotItemParams.areaType == '2'){
+                    //赋值下拉框
+                    $('#list'+specialHotItemParams.index).val(specialHotItemParams.areaLink);
+                }
+            }
+        }
+        setting.deleteSpecialDomFunction = function(obj,data){
+            obj.find('.hot_link_mokuai').attr('id','list'+data);
+        }
+        return setting;
+    }
+</script>
+
+<script>
+    /**
+     * @name jQuery imageMaps plugin
+     * @author liuyuqin
+     * @data 2016年8月3日
+     * ===========热区插件图片dom结构如下(显示的属性为必须)：=================
+     * （必须） <dd class="hot_area" id = "areaContent">
+     * 	1.（必须）图片url显示部分：
+     * 	<input id="picUrl" type="text" class="" readonly="readonly" value="">
+     * 	2.（必须）图片展示部分：
+     * 	<div class="" name="imageMap" id="image_map">
+     *       	<img src=""  ref="imageMap" id="photo"/>
+     * 	</div>
+     * 	3.（必须）添加热区渲染部分：
+     * 	1)table body样式：
+     * 	<table><tbody id="areaItems"> </tbody></table>
+     * 	2)ul样式：
+     * 	<ul id="areaItems"></ul>
+     * 	4.（必须）添加热区按钮部分：
+     * 	<p><a id="add_hot_area" href="javascript:;" class="second_btn">添加热区</a></p>
+     * 	5.（必须）热区数据存储（隐藏）：
+     * 	<input type="hidden" class="area_info" id="hotAreas" name="hotAreas" value='${moduleEditorDto.modulePropertyMap["hotAreas"]}'>
+     * 	6.<span style="font-family: Arial, Helvetica, sans-serif;">（可选）</span><span style="font-family: Arial, Helvetica, sans-serif;">可添加热区数量与还可添加热区数量实时显示：</span>
+     * 	<p><span class="gray01">已添加已添加<b class="orange01 added_amount">0</b>个热区，还可添加<b class="orange01 remain_amount">X</b>个热区</span></p>
+     * </dd>
+     * 特别注意：2,3必须属于同级dom结构，其他不用，但1,2,3,4必须都在<dd>结构下
+     *
+     * ======================setting 属性设置 ：==========================
+     *
+     * 1.maxAmount 最大值设定 （必须）
+     * 2.rowDomTag 行dom标签，目前仅可使用tr,li （必须）
+     * 3.specialHotItemParams 特殊热区参数名称对象 （必须）
+     * 	对象形式：setting.specialHotItemParams = {'areaLink':'添加热区时的默认值','areaType':'添加热区时的默认值'};
+     * 4.specialHotItemDomFunction(obj) 回调函数：返回特殊热区dom结构函数,例如<tr><li> （必须）
+     * 	obj：特殊对象<span style="font-family: Arial, Helvetica, sans-serif;">specialHotItemParams，在加载已存在的热区图片时赋值行</span>
+     * 5.initHotAreaFunction(areaInfoJson) 回调函数：初始化已编辑的热区（必须）
+     * 	areaInfoJson：hotAreas的JSON数据
+     * 6.initSpecialDomFunction(obj) 回调函数：初始化特殊热区函数 （可选）
+     * 	obj：编辑初始化热区的特殊dom对象setting.specialHotItemParams，编辑时需要
+     * 7.deleteSpecialDomFunction(obj,index) 回调函数：删除特殊热区重置Id函数 （可选）
+     * 	obj：被删除的行dom对象
+     * 	index：删除行热区的序号
+     *
+     * ======================热区通用dom获取 ：==========================
+     * 1.areaSort   热区排序号class
+     * 2.areaTitle  热区名称class
+     * 3.areaMapInfo  热区坐标class
+     * 4.area_item 热区行class
+     *
+     */
+
+
+                $.fn.imageMaps = function(setting){
+                    var initFlag = false;
+                    var deleteFlag = false;
+
+                    if (setting == null) {
+                        setting = {};
+                        setting.maxAmount = 10;// 最多可添加几个热区
+                        setting.rowDomTag = 'li';// 默认为li样式
+                        setting.specialHotItemParams = {'index':''};
+                    }
+                    else{
+                        if(setting.initSpecialDomFunction != null){
+                            initFlag = true;
+                        }
+                        if(setting.deleteSpecialDomFunction != null){
+                            deleteFlag = true;
+                        }
+                    }
+
+                    function initAddClickEvent(){
+                        // 初始化添加热区功能按钮
+                        $("#add_hot_area").unbind("click").click(function () {
+                            var index;
+                            var imageMap = $("#image_map");
+                            var areaContainer = imageMap.parent();
+                            positionContainer = areaContainer.find('.position_container');
+                            index = areaContainer.find(setting.rowDomTag+ '[name="areaItem"]').length + 1;
+                            var picUrl = $("#picUrl").val();
+                            if (picUrl == null || picUrl == '') {
+                               /* baseUtils.showNormalDialog({
+                                    "title" : "温馨提示",
+                                    "content" : '请先上传图片',
+                                    "showCancelBtn" : false
+                                });*/
+                                alert('请先上传图片');
+                                return;
+                            }
+                            var rowCount = $(".area_item");
+                            if (rowCount != null) {
+                                var c = rowCount.length;
+                                if (c == setting.maxAmount) {
+                                  /*  baseUtils.showNormalDialog({
+                                        "title" : "温馨提示",
+                                        "content" : '只能添加'+ setting.maxAmount+ '个热区',
+                                        "showCancelBtn" : false
+                                    });*/
+                                    alert('只能添加'+ setting.maxAmount+ '个热区');
+
+                                    return;
+                                }
+                            }
+                            //清除setting中的特殊dom参数
+                            for(var attr in setting.specialHotItemParams){
+                                setting.specialHotItemParams[attr] =  '';
+                            }
+                            setting.specialHotItemParams.index = index;
+                            $('#areaItems').append(createAreaItem(index,index,'0,0,90,30',setting.rowDomTag,setting.specialHotItemDomFunction(setting.specialHotItemParams)));
+                            if(initFlag){
+                                setting.initSpecialDomFunction(setting.specialHotItemParams);
+                            }
+                            selectPosition();
+                            positionContainer.append('<div ref="'+ index+ '" class="map_position map_selected_position" style="left:0px;top:0px;width:90px;height:30px;"><div class="map_position_bg"></div><span class="link_number_text"> '+ index+ '</span><span class="delete"></span><span class="resize"></span></div>');
+                            bindMapEvent();
+                            updateAreaCount();
+                            initDeleteClickEvent();
+                            return false;
+                        });
+                    }
+
+
+                    function initDeleteClickEvent(){
+                        //初始化删除热区功能按钮
+                        $('.hot_area .delete').unbind('click').click(function () {
+                            //点击热区内的删除按钮和点击table中的删除按钮dom层级不一致
+                            var ref = $(this).parent().attr('ref');
+                            if (ref == undefined) {
+                                ref = $(this).parent().parent().attr('ref');
+                            }
+                            var areaContainer = $(".hot_area");
+                            var positionContainer = areaContainer.find('.position_container');
+                            areaContainer.find(setting.rowDomTag +'[name="areaItem"][ref='+ ref + ']').remove();
+                            positionContainer.find('.map_position[ref=' + ref+ ']').remove();
+                            var index = 1;
+                            areaContainer.find(setting.rowDomTag + '[name="areaItem"]').each(function() {
+                                $(this).attr('ref',index);
+                                $(this).find('.areaSort').html('热区'+ index+"：");
+                                if(deleteFlag){
+                                    setting.deleteSpecialDomFunction($(this),index);
+                                }
+                                index++;
+                            });
+                            index = 1;
+                            positionContainer.find('.map_position').each(function() {
+                                $(this).attr('ref',index).find('.link_number_text').html(index);
+                                index++;
+                            });
+                            updateAreaCount();
+                        });
+                    }
+
+                    //初始化热区
+                    this.each(function() {
+                        var imageMap = $(this);
+                        var hotImage = imageMap.find('img[ref=imageMap]');
+                        // 清空容器的原有内容，重新填充内容
+                        // 清除原有热区
+                        imageMap.empty();
+                        imageMap.append(hotImage);
+                        //删除所有热区条目
+                        $(setting.rowDomTag + '[name="areaItem"]').remove();
+                        var picUrl = $("#picUrl").val();
+                        updateAreaCount();
+                        //初始化热区dom结构和可移动范围
+                        if (hotImage != null) {
+                            hotImage.wrap('<div class="image_container" style="position:relative;"></div>').css('border', '1px solid #ccc');
+                            var imageContainer = hotImage.parent(), imgConrainerOffset = imageContainer.offset(), imgOffset = hotImage.offset();
+                            imageContainer.append(/msie/.test(navigator.userAgent.toLowerCase()) ? $('<div class="position_container"></div>').css({
+                                background : '#fff',
+                                opacity : 0
+                            }): '<div class="position_container"></div>');
+                            imageContainer.find('.position_container').css({
+                                top : imgOffset.top- imgConrainerOffset.top,
+                                left : imgOffset.left- imgConrainerOffset.left,
+                                width : hotImage.width(),// 这里按照1.0，将hotImage改为imageMap
+                                height : hotImage.height(),
+                                border : '1px solid transparent'
+                            });
+                        }
+                        initAreaInfo();
+                        bindMapEvent();
+                        updateAreaCount();
+                        initAddClickEvent();
+                        initDeleteClickEvent();
+                    });
+
+
+                    // 初始化热区信息
+                    function initAreaInfo(){
+                        // 根据dom做了名称改动
+                        var areaInfo = $('input[name="hotAreas"]').val();
+                        if ($('.hot_area img[ref=imageMap]').attr("src")
+                                && areaInfo != null && areaInfo != '') {
+                            var index = 1;
+                            var areaContainer = $(".hot_area");
+                            var positionContainer = areaContainer
+                                    .find('.position_container');
+                            var areaInfoJson = eval('(' + areaInfo + ')');
+                            if (areaInfoJson != null && areaInfoJson.length > 0) {
+                                for (var j = 0; j < areaInfoJson.length; j++) {
+                                    var areaTitle = areaInfoJson[j].areaTitle;
+                                    var areaMapInfo = areaInfoJson[j].areaMapInfo;
+                                    for(var attr in setting.specialHotItemParams){
+                                        setting.specialHotItemParams[attr] =  areaInfoJson[j][attr];
+                                    }
+                                    //将行序号添加至特殊参数名称数组的开头
+                                    setting.specialHotItemParams.index = index;
+                                    if (areaTitle == null) {
+                                        areaTitle == '';
+                                    }
+                                    if (areaMapInfo == null) {
+                                        areaMapInfo == '';
+                                    }
+                                    if(areaMapInfo) {
+                                        //图片去掉高度对老数据兼容
+                                        var proportion = setting.proportion;
+                                        if(proportion){
+                                            var coordsTemp = areaMapInfo.split(',');
+                                            coordsTemp[1] = coordsTemp[1]*proportion;
+                                            coordsTemp[3] = coordsTemp[3]*proportion;
+                                            areaMapInfo = coordsTemp[0]+','+coordsTemp[1]+','+coordsTemp[2]+','+coordsTemp[3];
+                                        }
+                                        $('#areaItems').append(createAreaItem(index, areaTitle, areaMapInfo,setting.rowDomTag,setting.specialHotItemDomFunction(setting.specialHotItemParams)));
+                                        if(initFlag){
+                                            setting.initSpecialDomFunction(setting.specialHotItemParams);
+                                        }
+                                        var coords = areaMapInfo.split(',');
+                                        positionContainer.append('<div ref="'+index+'" class="map_position" style="left:'+coords[0]+'px;top:'+coords[1]+'px;width:'+(coords[2]-coords[0])+'px;height:'+(coords[3]-coords[1])+'px;"><div class="map_position_bg"></div><span class="link_number_text"> '+index+'</span><span class="delete"></span><span class="resize"></span></div>');
+                                        index++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //done
+                    function createAreaItem(index, areaTitle,areaMapInfo,rowTagDom,specialHotItemDom) {
+                        var item = [];
+                        //目前仅可使用table和ul li 样式
+                        if (rowTagDom == "tr") {
+                            item.push('<tr name = "areaItem" class="mt area_item" ref="'+ index + '">');
+                            item.push('<td><span class="areaSort">热区'+ index+ '：</span></td>');
+                            item.push('<td><input type="text" class="ipt_border area_title" value="'+ areaTitle + '"/></td>');
+                            item.push(specialHotItemDom);
+                            item.push('<input type="hidden" class="areaMapInfo" value="'+ areaMapInfo + '" />');
+                            item.push('<td><a href="javascript:;" class="second_btn ml delete">删除</a></td>');
+                            item.push('</tr>');
+                        } else {
+                            item.push('<li name="areaItem" class="mt area_item" ref="'+ index + '">');
+                            item.push('<span class="areaSort">热区' + index + '：</span>');
+                            item.push('<label for="">标题：</label><input type="text" value="'+ areaTitle+ '" class="w45 ipt_border area_title"/>');
+                            item.push(specialHotItemDom);
+                            item.push('<input type="hidden" class="areaMapInfo" value="'+ areaMapInfo + '" />');
+                            item.push('<a href="javascript:;" class="second_btn ml delete">删除</a>');
+                            item.push('</li>');
+                        }
+                        return item.join('');
+                    }
+
+                    //绑定map事件 done
+                    function bindMapEvent(){
+                        $(document).unbind("mousemove");
+                        $(document).unbind("mouseup");
+                        $('.position_container .map_position .map_position_bg').each(function(){
+                            var mapPositionBg = $(this);
+                            var container = $(this).parent().parent();
+                            var mapPosition = $(this).parent();
+                            var linkNumberText = mapPosition.find('.link_number_text');
+
+                            mapPositionBg.unbind('mousedown').mousedown(function(event){
+                                mapPositionBgMousedownFtn(event);
+                            });
+
+                            linkNumberText.unbind('mousedown').mousedown(function(event){
+                                mapPositionBgMousedownFtn(event);
+                            });
+
+                            function mapPositionBgMousedownFtn(event) {
+                                mapPositionBg.data('mousedown', true);
+                                mapPositionBg.data('pageX', event.pageX);
+                                mapPositionBg.data('pageY', event.pageY);
+                                mapPositionBg.css('cursor','move');
+                                selectPosition(mapPosition);
+                                return false;
+                            }
+
+                            $(document).mousemove(function(event) {
+                                if (!mapPositionBg.data('mousedown')) return false;
+                                var dx = event.pageX - mapPositionBg.data('pageX');
+                                var dy = event.pageY - mapPositionBg.data('pageY');
+                                if ((dx == 0) && (dy == 0)){
+                                    return false;
+                                }
+                                var mapPosition = mapPositionBg.parent();
+                                var p = mapPosition.position();
+
+                                var left = p.left+dx;
+
+                                if(left < 0) left = 0;
+                                var top = p.top+dy;
+                                if (top < 0) top = 0;
+                                var bottom = top + mapPosition.height();
+                                if(bottom > container.height()){
+                                    top = top-(bottom-container.height());
+                                }
+                                var right = left + mapPosition.width();
+                                if(right > container.width()){
+                                    left = left-(right-container.width());
+                                }
+
+                                mapPosition.css({
+                                    left:left,
+                                    top:top
+                                });
+                                mapPositionBg.data('pageX', event.pageX);
+                                mapPositionBg.data('pageY', event.pageY);
+
+                                bottom = top + mapPosition.height();
+                                right = left + mapPosition.width();
+                                $(setting.rowDomTag + '[name="areaItem"][ref='+ mapPosition.attr('ref') +'] .areaMapInfo').val(new Array(Math.round(left),Math.round(top),Math.round(right),Math.round(bottom)).join(','));
+                                return false;
+                            }).mouseup(function(event){
+                                mapPositionBg.data('mousedown', false);
+                                mapPositionBg.css('cursor','default');
+                                return false;
+                            });
+                        });
+                        $('.position_container .map_position .resize').each(function(){
+                            var mapPositionResize = $(this);
+                            var container = $(this).parent().parent();
+                            var mapPosition = $(this).parent();
+
+                            mapPositionResize.unbind('mousedown').mousedown(function(event){
+                                mapPositionResize.data('mousedown', true);
+                                mapPositionResize.data('pageX', event.pageX);
+                                mapPositionResize.data('pageY', event.pageY);
+                                return false;
+                            }).unbind('mouseup').mouseup(function(event){
+                                mapPositionResize.data('mousedown', false);
+                                return false;
+                            });
+                            $(document).mousemove(function(event){
+                                if (!mapPositionResize.data('mousedown')) return false;
+
+                                var dx = event.pageX - mapPositionResize.data('pageX');
+                                var dy = event.pageY - mapPositionResize.data('pageY');
+                                if ((dx == 0) && (dy == 0)){
+                                    return false;
+                                }
+                                var mapPosition = mapPositionResize.parent();
+                                var p = mapPosition.position();
+                                var left = p.left;
+                                var top = p.top;
+                                var height = mapPosition.height()+dy;
+                                if((top+height) > container.height()){
+                                    height = height-((top+height)-container.height());
+                                }
+                                if (height <20) height = 20;
+                                var width = mapPosition.width()+dx;
+                                if((left+width) > container.width()){
+                                    width = width-((left+width)-container.width());
+                                }
+                                if(width <12) width = 12;
+                                mapPosition.css({
+                                    width:width,
+                                    height:height
+                                });
+                                mapPositionResize.data('pageX', event.pageX);
+                                mapPositionResize.data('pageY', event.pageY);
+
+                                bottom = top + mapPosition.height();
+                                right = left + mapPosition.width();
+                                $(setting.rowDomTag + '[name="areaItem"][ref='+ mapPosition.attr('ref') +'] .areaMapInfo').val(new Array(Math.round(left),Math.round(top),Math.round(right),Math.round(bottom)).join(','));
+                                return false;
+                            }).mouseup(function(event){
+                                mapPositionResize.data('mousedown', false);
+                                return false;
+                            });
+                        });
+                    }
+
+                    //选中某个热区map
+                    function selectPosition(selectedPosition) {
+                        $(".map_position").removeClass("map_selected_position");
+                        if (selectedPosition) {
+                            selectedPosition.addClass("map_selected_position");
+                        }
+                    }
+
+                    //更新热区数量
+                    function updateAreaCount() {
+                        var maxCount = setting.maxAmount;
+                        var rowCount = $(".area_item");
+                        if (rowCount != null) {
+                            var c = rowCount.length;
+                            $(".added_amount").html(c);
+                            $(".remain_amount").html(maxCount - c);
+                        }
+                    }
+                };
+
+</script>

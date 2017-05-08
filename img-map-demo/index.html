@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Image Maps test</title>
+    <style>
+* {
+    padding:0;margin:0;
+}
+    </style>
+    <script type="text/javascript" language="javascript" src="javascript/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" language="javascript" src="javascript/jquery.image-maps.js"></script>
+
+</head>
+
+<body>
+
+<div id="debug"></div>
+<div class="operation-bt" style="position:fixed;right: 0;top:180px;z-index: 9999;"><input class="upload-img-bt" type="button" value="上传图片" style="height:26px;width:70px;margin:2px 0;"/><input class="upload-file" style="display: none;" type="file" value="上传图片" /></div>
+<div id="imgMap">
+    <img src="store_index.jpg" name="test" border="0" usemap="#Map" ref='imageMaps'/>
+    <map name="Map">
+        <area data-area-name="cny热区" shape="rect" coords="203,134,383,187" href="http://yiye.name"/>
+        <area data-area-name="llj热区" shape="rect" coords="403,134,583,187" href="http://yiye.name"/>
+    </map>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript">
+    var img=new Image();
+    img.onload = function () {
+        $('#imgMap').imageMaps();
+    };
+    img.onerror = function () {
+        alert('店铺图片加载错误！');
+    };
+    img.src = 'store_index.jpg';
+</script>

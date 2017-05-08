@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <script type="text/javascript" src="img.js"></script>
+    <script type="text/javascript">
+        function abc() {
+            main("aa");
+        }
+    </script>
+</head>
+
+<body>
+<div id="mask">
+    <input type="button" value="set" onClick="abc()">
+</div>
+</body>
+</html>
+<script>
+
+    // MAP1名称
+    var mapName1 = "Map1";
+    // MAP1ID
+    var mapId1 = "MapId1";
+    // 指定DIV名称
+    var divnId = "mask";
+
+    // 图片路径
+    var imgPath = "";
+    main = function (type) {
+        var obj;
+        switch (type) {
+            case "aa" :
+// 指定图片及热点对象取得
+                obj = imgMapList[0];
+// 创建图片及热点
+                creatImpAndHot(obj);
+                break;
+        }
+    }
+
+    creatImpAndHot = function (hotObj) {
+// 创建热点MAP对象
+        var map = document.createElement("Map");
+// 设置MAP名称
+        map.name = mapName1;
+// 设置MAPID
+        map.id = mapId1;
+// 热点列表取得
+        var length = hotObj.map.length;
+        for (var i = 0; i < length; i++) {
+            var tempMap = hotObj.map[i];
+// 创建热区对象
+            area = document.createElement("area");
+// 设置热区类型
+            area.shape = tempMap.shape;
+// 设置热区坐标
+            area.coords = tempMap.coords;
+// 设置热区对应链接
+            area.href = tempMap.href;
+// 设置热区对应事件
+            area.onclick = tempMap.onclick;
+// 设置热区id
+            area.id = tempMap.id;
+// 向MAP中追加热区对象
+            map.appendChild(area);
+        }
+
+
+// 创建图片对象
+        var img = document.createElement("img");
+// 图片ID
+        img.id = hotObj.img.id;
+// 设置图片链接
+        img.src = hotObj.img.imgName;
+// 设置图片对应热区MAP
+        img.useMap = "#" + mapName1;
+// 设置图片尺寸
+        img.width = hotObj.img.width;
+        img.height = hotObj.img.height;
+// 边框
+        img.border = "0";
+// 设置图片ID
+        img.id = hotObj.id;
+// 清空指定DIV内容
+        document.getElementByIdx_x(divnId).innerHTML = '';
+// 向DIV区添加MAP对象
+        document.getElementByIdx_x(divnId).appendChild(map);
+// 向DIV区添加图片对象
+        document.getElementByIdx_x(divnId).appendChild(img);
+    }
+
+    testClick = function () {
+        alert();
+    }
+
+    creatImgAndMap = function () {
+        var tempArray = new Array();
+        var tempObj = new Object();
+// 图片ID
+        tempObj.img = new Object();
+        tempObj.img.id = "test1";
+// 图片名称（只要图片名称，路径由公共变量设置）
+        tempObj.img.imgName = "images/timg.jpg";
+// 设置图片尺寸
+        tempObj.img.width = "640";
+        tempObj.img.height = "200";
+        var tempMap;
+        tempObj.map = new Array();
+// 热点1
+        tempMap = new Object();
+// 热区ID
+        tempMap.id = "test1_hot1"
+// 类型
+        tempMap.shape = "rect";
+// 热区坐标
+        tempMap.coords = "159,167,238,191";
+// 链接
+        tempMap.href = "#";
+// 单击事件
+        tempMap.onclick = testClick;
+// 添加到列表中
+        tempObj.map[0] = tempMap;
+// 热点2
+        tempMap = new Object();
+// 热区ID
+        tempMap.id = "test1_hot2"
+// 类型
+        tempMap.shape = "rect";
+// 热区坐标
+        tempMap.coords = "147,7,286,33";
+// 链接
+        tempMap.href = "#";
+// 单击事件
+        tempMap.onclick = testClick;
+// 添加到列表中
+        tempObj.map[1] = tempMap;
+// 将图片及相应热区信息添加到列表中
+        tempArray[0] = tempObj;
+        return tempArray;
+    };
+    // 热点映射
+    var imgMapList = creatImgAndMap();
+
+</script>
+
